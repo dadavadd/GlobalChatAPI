@@ -31,5 +31,22 @@ namespace GlobalChat.Hubs
                 await Clients.All.SendAsync("ReceiveMessage", username, message);
             }
         }
+
+        public async Task GetRecentMessages()
+        {
+            var messages = await _context.Messages
+                .OrderByDescending(m => m.Timestamp)
+                .Take(100)
+                .ToListAsync();
+
+            foreach (var message in messages)
+            {
+                var user = await _context.Users.FindAsync(message.UserId);
+                if (user != null)
+                {
+                    await Clients.Caller.SendAsync("ReceiveMessage", user.Username, message.Content);
+                }
+            }
+        }
     }
 }
