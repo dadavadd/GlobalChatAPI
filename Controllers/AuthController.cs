@@ -1,4 +1,5 @@
 ﻿using GlobalChat.DTOs;
+using GlobalChat.Middlewares;
 using GlobalChat.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,9 @@ namespace GlobalChat.Controllers
             try
             {
                 var user = await _authService.Register(dto.Username, dto.Password);
+
+                PreventDuplicateAccountsMiddleware.RegisterUser(HttpContext.Connection.RemoteIpAddress.ToString());
+
                 return Ok(new { username = user.Username });
             }
             catch (Exception ex)

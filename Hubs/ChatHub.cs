@@ -35,7 +35,7 @@ namespace GlobalChat.Hubs
         public async Task GetRecentMessages()
         {
             var messages = await _context.Messages
-                .OrderByDescending(m => m.Timestamp)
+                .OrderBy(m => m.Timestamp)
                 .Take(100)
                 .ToListAsync();
 
